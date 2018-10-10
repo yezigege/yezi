@@ -1,5 +1,6 @@
 from flask import Flask, session
 from flask.ext.sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager
 from flask_session import Session
 from flask_wtf import CSRFProtect
@@ -44,6 +45,10 @@ CSRFProtect(app)
 Session(app)
 
 manager = Manager(app)
+# 将 app 与 db 关联
+Migrate(app, db)
+# 将迁移命令添加到manager中
+manager.add_command('db', MigrateCommand)
 
 @app.route('/')
 def index():
