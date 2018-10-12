@@ -4,7 +4,7 @@ from flask import Flask, session
 from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager
 
-from info import db, create_app
+from info import db, create_app, models
 
 # manage.py 只是当作程序的入口，不关心业务相关逻辑
 

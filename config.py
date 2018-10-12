@@ -9,7 +9,7 @@ class  Config(object):
 
     DEBUG = True
     # 数据库的配置信息
-    SQLALCHEMY_DATABASW_URI = "mysql://root:mysql@127.0.0.1:3306/chonggou"
+    SQLALCHEMY_DATABASE_URI = "mysql://root:mysql@127.0.0.1:3306/chonggou"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # redis 的配置
