@@ -1,7 +1,8 @@
 import random
 import re
 
-from flask import request, abort, current_app, make_response, jsonify
+from flask import request, abort, current_app, make_response
+from flask.json import jsonify
 
 from info import redis_store, constants
 from info.libs.yuntongxun.sms import CCP
@@ -11,7 +12,7 @@ from info.utils.captcha.captcha import captcha
 
 
 @passport_blu.route('/sms_code', methods=["POST"])
-def send_sms():
+def send_sms_code():
     """
     发送短信验证码的逻辑
     1. 获取参数：手机号，图片验证码，图片随机id
@@ -28,6 +29,7 @@ def send_sms():
     # 有两种方式以供选择
     # 一：params_dict = json.loads(request.data)
     params_dict = request.json
+
     mobile = params_dict.get("mobile")
     image_code = params_dict.get("image_code")
     image_code_id = params_dict.get("image_code_id")
@@ -41,13 +43,13 @@ def send_sms():
 
     # 3. 从redis中取出真实验证码内容
     try:
-        real_image_code = redis_store.get("ImageCodeId" + image_code_id)
+        real_image_code = redis_store.get("ImageCodeId_" + image_code_id)
     except Exception as e:
         current_app.logger.error(e)
         return jsonify(errno=RET.DBERR, errmsg="数据查询失败")
 
     if not real_image_code:
-        return jsonify(errno=RET.NODATA, errmsg="验证码已过期")
+        return jsonify(errno=RET.NODATA, errmsg="图片验证码已过期")
 
     # 4. 与用户发送过来的验证码进行对比（如果不一致，就返回验证码输入错误）
     if real_image_code.upper() != image_code.upper():
