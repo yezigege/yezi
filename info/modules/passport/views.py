@@ -13,6 +13,54 @@ from . import passport_blu
 from info.utils.captcha.captcha import captcha
 
 
+@passport_blu.route('/login')
+def login():
+    """
+    登录的逻辑
+    1. 获取参数
+    2. 校验参数
+    3. 校验密码是否正确
+    4. 保存用户的登录状态
+    5. 响应
+    :return:
+    """
+    # 1. 获取参数
+    params_dict = request.json
+    mobile = params_dict.get("mobile")
+    password = params_dict.get("password")
+
+    # 2. 校验参数
+    if not all([mobile, password]):
+        return jsonify(errno=RET.PARAMERR, errmsg="参数错误")
+
+    # 校验手机号是否正确
+    if not re.match('1[35678]\\d{9}', mobile):
+        return jsonify(errno=RET.PARAMERR, errmsg="手机号格式不正确")
+
+    # 3. 校验密码是否正确
+    # 先查询出当前是否有指定手机号的用户
+    try:
+        user = User.query.filter(User.mobile == mobile).first()
+    except Exception as e:
+        current_app.logger.error(e)
+        return jsonify(errno=RET.DBERR, errmsg="数据查询错误")
+    # 判断用户是否存在
+    if not user:
+        return jsonify(errno=RET.NODATA, errmsg="用户不存在")
+
+    # 校验登录的密码和当前用户的密码是否一致
+    if not user.check_passowrd(password):
+        return jsonify(errno=RET.PWDERR, errmsg="用户名或密码错误")
+
+    # 4. 保存用户的登录状态
+    session["user_id"] = user.id
+    session["mobile"] = user.mobile
+    session["nick_name"] = user.nick_name
+
+    # 5. 响应
+    return jsonify(errno=RET.OK, errmsg="登录成功")
+
+
 @passport_blu.route('/register', methods=["POST"])
 def register():
     """
@@ -135,10 +183,10 @@ def send_sms_code():
 
     # 6. 发送短信验证码
     # 注意： 测试的短信模板编号为1
-    result = CCP().send_template_sms(mobile, [sms_code_str, constants.SMS_CODE_REDIS_EXPIRES / 5], "1")
-    if result != 0:
-        # 代表发送不成功
-        return jsonify(errno=RET.THIRDERR, errmsg="发送短信失败")
+    # result = CCP().send_template_sms(mobile, [sms_code_str, constants.SMS_CODE_REDIS_EXPIRES / 5], "1")
+    # if result != 0:
+    #     # 代表发送不成功
+    #     return jsonify(errno=RET.THIRDERR, errmsg="发送短信失败")
 
     # 保存验证码内容到redis中
     try:
@@ -172,7 +220,7 @@ def get_image_code():
 
     # 3. 生成图片验证码
     name, text, image = captcha.generate_captcha()
-
+    current_app.logger.debug("图片验证码内容是%s" % text)
     # 4. 保存图片验证码文字内容到redis
     try:
         redis_store.set("ImageCodeId_" + image_code_id, text, constants.IMAGE_CODE_REDIS_EXPIRES)
