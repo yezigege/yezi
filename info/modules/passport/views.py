@@ -62,7 +62,9 @@ def register():
     user.nick_name = mobile
     # 记录用户最后一次登录时间
     user.last_login = datetime.now()
-    # todo 对密码进行处理
+    # 对密码进行处理
+    # 需求：在设置password 的时候，去对 password进行加密结果给 user.password_hash赋值
+    user.password = password
 
     # 6. 将 User 模型添加数据库
     try:
