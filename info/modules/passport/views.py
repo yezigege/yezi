@@ -13,7 +13,7 @@ from . import passport_blu
 from info.utils.captcha.captcha import captcha
 
 
-@passport_blu.route('/login')
+@passport_blu.route('/login', methods=["POST"])
 def login():
     """
     登录的逻辑
