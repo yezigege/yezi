@@ -6,6 +6,7 @@ from info.modules.news import news_blu
 
 
 @news_blu.route('/<int:news_id>')
+@user_login_data
 def news_detail(news_id):
     """
     新闻详情
@@ -13,14 +14,7 @@ def news_detail(news_id):
     :return:
     """
     # 查询用户登录信息
-    user_id = session.get("user_id", None)
-    user = None
-    if user_id:
-        # 尝试查询用户的模型
-        try:
-            user = User.query.get(user_id)
-        except Exception as e:
-            current_app.logger.error(e)
+    user = g.user
 
     # 右侧的新闻排行的逻辑
     news_list = []
