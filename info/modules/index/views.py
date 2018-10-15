@@ -40,13 +40,13 @@ def news_list():
         return jsonify(errno=RET.DBERR, errmsg="数据查询错误")
 
     # 取到当前页的数据
-    news_list = paginate.items  # 模型对象列表
+    news_model_list = paginate.items  # 模型对象列表
     total_page = paginate.pages
     current_page = paginate.pages
 
     # 将模型对象列表转换为字典列表
     news_dict_li = []
-    for news in news_list:
+    for news in news_model_list:
         news_dict_li.append(news.to_basic_dict())
 
     data = {
