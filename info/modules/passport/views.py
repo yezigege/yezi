@@ -13,6 +13,21 @@ from . import passport_blu
 from info.utils.captcha.captcha import captcha
 
 
+@passport_blu.route('/logout')
+def logout():
+    """
+    退出登录
+    :return:
+    """
+    # pop是移除session中的数据(dict)
+    # pop 会有一个返回值，如果要移除的key不存在，就返回None
+    session.pop('user_id',None)
+    session.pop('mobile', None)
+    session.pop('nick_name', None)
+
+    return jsonify(errno=RET.OK, errmsg="退出成功")
+
+
 @passport_blu.route('/login', methods=["POST"])
 def login():
     """
