@@ -1,6 +1,7 @@
 # 共用的自定义工具类
 import functools
-from flask import session, current_app
+from flask import session, current_app, g
+
 from info.models import User
 
 
