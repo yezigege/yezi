@@ -46,10 +46,15 @@ def news_detail(news_id):
     # 更新新闻的点击次数
     news.clicks += 1
 
+    is_collected = True
+
+    # if xxx
+
     data = {
         "user": user.to_dict() if user else None,
         "news_dict_li": news_dict_li,
-        "news": news.to_dict()
+        "news": news.to_dict(),
+        "is_collected": is_collected
     }
 
 
