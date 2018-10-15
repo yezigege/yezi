@@ -72,6 +72,17 @@ def login():
     session["mobile"] = user.mobile
     session["nick_name"] = user.nick_name
 
+    # 设置当前用户最后一次登录的时间
+    user.last_login = datetime.now()
+
+    # 如果在试图函数中，对模型身上的属性有修改，需要commit到数据库进行爆保存
+    # 但是可以不用自己亲自去db.session.commit()保存, 前提是对SQLALchemy进行过相关配置
+    # try:
+    #     db.session.commit()
+    # except Exception as e:
+    #     db.session.rollback()
+    #     current_app.logger.error(e)
+
     # 5. 响应
     return jsonify(errno=RET.OK, errmsg="登录成功")
 
