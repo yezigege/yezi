@@ -11,5 +11,9 @@ def news_detail(news_id):
     :return:
     """
 
+    data = {
 
-    return render_template("news/detail.html")
+    }
+
+
+    return render_template("news/detail.html", data=data)
