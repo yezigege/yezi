@@ -169,6 +169,7 @@ def news_detail(news_id):
     # 更新新闻的点击次数
     news.clicks += 1
 
+    # 判断用户是否是收藏
     is_collected = False
 
     if user:
@@ -177,11 +178,26 @@ def news_detail(news_id):
         if news in user.collection_news:
             is_collected = True
 
+    # 查询平论数据
+    comment = []
+    try:
+      comments = Comment.query.filter(Comment.news_id == news_id).order_by(Comment.create_time.desc()).all()
+    except Exception as e:
+        current_app.logger.error(e)
+
+    comment_dict_li = []
+
+    for comment in comments:
+        comment_dict = comment.to_dict()
+        comment_dict_li.append(comment_dict)
+
+
     data = {
         "user": user.to_dict() if user else None,
         "news_dict_li": news_dict_li,
         "news": news.to_dict(),
-        "is_collected": is_collected
+        "is_collected": is_collected,
+        "comments": comment_dict_li
     }
 
 
