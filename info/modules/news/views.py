@@ -64,7 +64,7 @@ def comment_news():
         current_app.logger.error(e)
         db.session.rollback()
 
-    return jsonify(errno=RET.OK, errmsg="OK", comment=comment.to_dict())
+    return jsonify(errno=RET.OK, errmsg="OK", data=comment.to_dict())
 
 
 
