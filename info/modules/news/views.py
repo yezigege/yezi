@@ -1,8 +1,9 @@
-from flask import render_template, current_app, session
+from flask import render_template, current_app, session, g
 
 from info import constants
 from info.models import News, User
 from info.modules.news import news_blu
+from info.utils.common import user_login_data
 
 
 @news_blu.route('/<int:news_id>')

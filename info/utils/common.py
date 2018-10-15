@@ -16,7 +16,7 @@ def do_index_class(index):
 
     return ""
 
-def query_user_data(f):
+def user_login_data(f):
     @functools.wraps(f)
     def wrapper(*args, **kwargs):
         user_id = session.get("user_id", None)
