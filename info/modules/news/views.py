@@ -27,7 +27,7 @@ def collect_news():
     action = request.json.get("action")
 
     # 2. 判断参数
-    if not not all([news_id, action]):
+    if not all([news_id, action]):
         return jsonify(errno=RET.PARAMERR, errmsg="参数错误")
 
     if action not in ["collect", "cancel_collect"]:
